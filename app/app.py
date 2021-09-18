@@ -82,15 +82,18 @@ def register_routes(app, collection):
     @app.route('/dive')
     def begin_dive():
         if (collection.count_documents({}) > 0):
-            id = collection.aggregate([{ "$sample": { "size": 1 } }])
-            print(id)
-            return redirect('/dive/' + id)
+            aggregation = collection.aggregate([{ "$sample": { "size": 1 } }])
+            for item in list(aggregation):
+              return redirect('/dive/' + str(item['_id']))
         else:
           return redirect('/empty')
 
     @app.route('/dive/<string:id>')
     def view_drop(id):
-        return render_template('welcome/drop.html') # FIXME: add params
+        # print(id)
+        object = collection.find_one({"_id": ObjectId(id)})
+        # return render_template('welcome/drop.html') # FIXME: add params
+        return object['content']
 
     @app.route('/empty')
     def desert():
@@ -99,3 +102,20 @@ def register_routes(app, collection):
     @app.route('/stream')
     def stream():
         return render_template('welcome/stream.html')
+
+    @app.route('/test')
+    def test_empty():
+        return {'hello': 'hi'}
+    
+    @app.route('/add_drop')
+    def drop_form():
+      return render_template('welcome/drop.html')
+
+    @app.route('/add_drop', methods=['POST'])
+    def add_drop():
+        content = request.form['text']
+        new_drop = {'content': content, 'relations': []}
+        result = collection.insert_one(new_drop)
+        if (result.acknowledged):
+          return {"id": str(result.inserted_id)}
+        return {"submission unsuccessful": "there was no result"}
