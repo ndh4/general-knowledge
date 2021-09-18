@@ -14,6 +14,7 @@ def create_app(config_object=settings):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
+    register_routes(app)
     return app
 
 def register_extensions(app):
@@ -47,7 +48,8 @@ def register_errorhandlers(app):
 
     return None
 
-#@app.route('/')
-#@app.route('/welcome')
-#def welcome():
-   # return render_template("")
+def register_routes(app):
+    @app.route('/')
+    @app.route('/welcome')
+    def welcome():
+        return render_template("/layouts/welcome.html")
