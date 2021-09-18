@@ -25,7 +25,7 @@ def create_app(config_object=settings):
     app.config['MONGO_PWD'] = os.getenv('DBPWD')   
     pwd = app.config['MONGO_PWD']
 
-    app.config['MONGO_URI'] = "mongodb+srv://"+user+":"+pwd+"@cluster0.seola.mongodb.net/"+dbname+"?retryWrites=true&w=majority"
+    app.config['MONGO_URI'] = "mongodb+srv://"+str(user)+":"+str(pwd)+"@cluster0.seola.mongodb.net/"+str(dbname)+"?retryWrites=true&w=majority"
     mongo = PyMongo(app)
 
     register_extensions(app)
