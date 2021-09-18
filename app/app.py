@@ -26,10 +26,8 @@ def create_app(config_object=settings):
     app.config['MONGO_PWD'] = os.getenv('DBPWD')   
     pwd = app.config['MONGO_PWD']
 
-    app.config['MONGO_URI'] = "mongodb+srv://"+str(user)+":"+str(pwd)+"@cluster0.seola.mongodb.net/"+str(dbname)+"?retryWrites=true&w=majority"
+    app.config['MONGO_URI'] = "mongodb+srv://"+user+":"+pwd+"@cluster0.seola.mongodb.net/"+dbname+"?retryWrites=true&w=majority"
     mongo = PyMongo(app)
-    print("hello")
-    print(mongo.db.sea) ###
     
     client = MongoClient(app.config['MONGO_URI'])
     db = client['knowledge_sea']
@@ -83,7 +81,7 @@ def register_routes(app, collection):
 
     @app.route('/dive')
     def begin_dive():
-        if (collection.count() > 0):
+        if (collection.count_documents({}) > 0):
             id = collection.aggregate([{ "$sample": { "size": 1 } }])
             print(id)
             return redirect('/dive/' + id)
@@ -93,6 +91,10 @@ def register_routes(app, collection):
     @app.route('/dive/<string:id>')
     def view_drop(id):
         return render_template('welcome/drop.html') # FIXME: add params
+
+    @app.route('/empty')
+    def desert():
+        return render_template('welcome/empty.html')
 
     @app.route('/stream')
     def stream():
