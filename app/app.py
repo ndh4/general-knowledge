@@ -1,20 +1,37 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from . import settings, controllers, models
 from .extensions import db
+from datetime import datetime
+from flask_pymongo import PyMongo
+import os
+from bson.objectid import ObjectId
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 
 def create_app(config_object=settings):
-    # create and configure the app
+    # create and configure the app (mlh template)
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_object)
+
+    # -- Initialization section --
+    app = Flask(__name__)
+    
+    app.config['MONGO_DBNAME'] = os.getenv('DBNAME')
+    dbname = app.config['MONGO_DBNAME']
+    app.config['USER'] = os.getenv('DBUSER')
+    user = app.config['USER']
+    app.config['MONGO_PWD'] = os.getenv('DBPWD')   
+    pwd = app.config['MONGO_PWD']
+
+    app.config['MONGO_URI'] = f"mongodb+srv://{user}:{pwd}@cluster0.seola.mongodb.net/{dbname}?retryWrites=true&w=majority"
+    mongo = PyMongo(app)
 
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    register_routes(app)
+    register_routes(app, mongo)
     return app
 
 def register_extensions(app):
@@ -27,9 +44,9 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    app.register_blueprint(controllers.home.blueprint)
-    app.register_blueprint(controllers.auth.blueprint)
-    app.register_blueprint(controllers.tutorial.blueprint)
+    # app.register_blueprint(controllers.home.blueprint)
+    # app.register_blueprint(controllers.auth.blueprint)
+    # app.register_blueprint(controllers.tutorial.blueprint)
     return None
 
 def register_errorhandlers(app):
@@ -48,8 +65,19 @@ def register_errorhandlers(app):
 
     return None
 
-def register_routes(app):
+def register_routes(app, mongo):
     @app.route('/')
-    @app.route('/welcome')
-    def welcome():
-        return render_template("/layouts/welcome.html")
+    def index():
+        return render_template('welcome/index.html')
+
+    @app.route('/drop')
+    def drop():
+        return render_template('welcome/drop.html')
+
+    @app.route('/sea')
+    def sea():
+        return render_template('welcome/sea.html')
+
+    @app.route('/stream')
+    def stream():
+        return render_template('welcome/stream.html')
