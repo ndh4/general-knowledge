@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, render_template, request, redirect
+from flask_pymongo.wrappers import MongoClient
 from . import settings, controllers, models
 from .extensions import db
 from datetime import datetime
@@ -25,13 +26,17 @@ def create_app(config_object=settings):
     app.config['MONGO_PWD'] = os.getenv('DBPWD')   
     pwd = app.config['MONGO_PWD']
 
-    app.config['MONGO_URI'] = "mongodb+srv://"+str(user)+":"+str(pwd)+"@cluster0.seola.mongodb.net/"+str(dbname)+"?retryWrites=true&w=majority"
+    app.config['MONGO_URI'] = "mongodb+srv://"+user+":"+pwd+"@cluster0.seola.mongodb.net/"+dbname+"?retryWrites=true&w=majority"
     mongo = PyMongo(app)
+    
+    client = MongoClient(app.config['MONGO_URI'])
+    db = client['knowledge_sea']
+    collection = db['sea']
 
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    register_routes(app, mongo)
+    register_routes(app, mongo.db.sea)
     return app
 
 def register_extensions(app):
@@ -65,7 +70,7 @@ def register_errorhandlers(app):
 
     return None
 
-def register_routes(app, mongo):
+def register_routes(app, collection):
     @app.route('/')
     def index():
         return render_template('welcome/index.html')
@@ -74,10 +79,43 @@ def register_routes(app, mongo):
     def drop():
         return render_template('welcome/drop.html')
 
-    @app.route('/sea')
-    def sea():
-        return render_template('welcome/sea.html')
+    @app.route('/dive')
+    def begin_dive():
+        if (collection.count_documents({}) > 0):
+            aggregation = collection.aggregate([{ "$sample": { "size": 1 } }])
+            for item in list(aggregation):
+              return redirect('/dive/' + str(item['_id']))
+        else:
+          return redirect('/empty')
+
+    @app.route('/dive/<string:id>')
+    def view_drop(id):
+        # print(id)
+        object = collection.find_one({"_id": ObjectId(id)})
+        # return render_template('welcome/drop.html') # FIXME: add params
+        return object['content']
+
+    @app.route('/empty')
+    def desert():
+        return render_template('welcome/empty.html')
 
     @app.route('/stream')
     def stream():
         return render_template('welcome/stream.html')
+
+    @app.route('/test')
+    def test_empty():
+        return {'hello': 'hi'}
+    
+    @app.route('/add_drop')
+    def drop_form():
+      return render_template('welcome/drop.html')
+
+    @app.route('/add_drop', methods=['POST'])
+    def add_drop():
+        content = request.form['text']
+        new_drop = {'content': content, 'relations': []}
+        result = collection.insert_one(new_drop)
+        if (result.acknowledged):
+          return {"id": str(result.inserted_id)}
+        return {"submission unsuccessful": "there was no result"}
