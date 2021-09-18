@@ -7,6 +7,14 @@ blueprint = Blueprint('welcome', __name__)
 def index():
     return render_template('welcome/index.html')
 
-@blueprint.route('/example')
-def example():
-    return render_template('welcome/example.html')
+@blueprint.route('/drop')
+def drop():
+    return render_template('welcome/drop.html')
+
+@blueprint.route('/sea')
+def sea():
+    return render_template('welcome/sea.html')
+
+@blueprint.route('/stream')
+def stream():
+    return render_template('welcome/stream.html')
