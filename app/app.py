@@ -46,3 +46,8 @@ def register_errorhandlers(app):
         return render_template('500.html'), 500
 
     return None
+
+#@app.route('/')
+#@app.route('/welcome')
+#def welcome():
+   # return render_template("")
