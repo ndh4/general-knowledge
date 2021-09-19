@@ -1,102 +1,26 @@
-# Introduction
+## Inspiration
+The project originated from a discussion about life regrets - what we should have done differently, and if we could travel back in time, what we would tell our past self. Each person's life is shaped by their own unique experiences, and each one of us is exposed to different general knowledge. If only there is a way to compile all the general knowledge across humanity and have that be the guidance of our future steps.
 
-This is a hackathon boilerplate for new Flask web applications created by [Major League Hacking](https://github.com/MLH). It is for hackers looking to get started quickly on a new hackathon project using the Flask microframework.
+## What it does
+Sea of Knowledge is a website that compiles user knowledge - aka “droplets” and arranges them in a map of relevance of drops to one another. When the user views a droplet, they have the option to view another droplet from a list of a few related droplets. Through this, the user can amass a great amount of knowledge by “swimming” through a “stream” of droplets. Users can also contribute droplets to the website and participate in improving Sea of Knowledge by identifying connections between different droplets. This way, the connections between the droplets are better defined, improving the user experience of the application.
 
-- [Installation Guide](#installation-guide) - How to get started with a new Flask app
-- [User Guide](https://github.com/MLH/mlh-hackathon-flask-starter/blob/master/docs/USER_GUIDE.md) - How to develop apps created with this starter project
-- [Contributing Guide](https://github.com/MLH/mlh-hackathon-flask-starter/blob/master/docs/CONTRIBUTING.md) - How to contribute to the project
+## How we built it
+We used Python to code our backend with Flask to set up the framework of our application and MongoDB to store our information, as well as HTML and CSS to display our frontend. Our setup is fairly simple for a web application, but as a consequence our setup is serverless: we don’t have a “middleman” with our application, so our client communicates directly with the backend. This is fine for a small audience of well-intentioned users, but if we made plans to expand the project, we would need to remedy this to account for potential malicious individuals.
 
-# <a name='installation-guide'>Installation Guide</a>
+## Challenges we ran into
+Our first issue was an issue that our project aims to solve: a lack of surface level knowledge about a topic. One of our group members hadn’t used Github before and had no knowledge of the different commands. With help from the other two members, she was quickly able to understand the different commands, and we were all on the same level of understanding and could commence coding. However, this brings an important issue to light: there aren’t always people around that you can ask for help. This is a problem Sea of Knowledge aims to solve by providing answers to these questions so that you know what you need in order to do a deep dive into a topic.
 
-This project requires the following tools:
+We had little success using either psql on a locally hosted database or Google Cloud database. Trying to get these methods to work took up almost half of the hacking time. However, after we switched to MongoDB, which we were more familiar with and had used before, the journey got much smoother.
 
-- Python - The programming language used by Flask.
-- PostgreSQL - A relational database system.
-- Virtualenv - A tool for creating isolated Python environments.
+We also had troubles with debugging. It seemed like whenever we fixed one bug, two more popped up that needed to be fixed. However, with tenacity and lots of Google searches, we crushed our infestation.
 
-To get started, install Python and Postgres on your local computer if you don't have them already. A simple way for Mac OS X users to install Postgres is using [Postgres.app](https://postgresapp.com/). You can optionally use another database system instead of Postgres, like [SQLite](http://flask.pocoo.org/docs/1.0/patterns/sqlite3/).
+## Accomplishments that we're proud of
+One of our biggest accomplishments was actually just getting our code to run. Once we decided on a project idea, the rest of Friday night was dedicated to getting our Flask template to work. Even when it did work, we had issues with adding additional pages and getting imports to act like they were supposed to. Our code simply working as it’s meant to is a testament to our group’s determination in the face of adversity.
 
-## Getting Started
+We’re also proud of our use of MongoDB in our project. We’re able to have users add to our database and see their contributions in real time, which greatly improves the functionality of our website.
 
-**Step 1. Clone the code into a fresh folder**
+## What we learned
+Some of the things that we learned are obvious: improved coding skills, knowledge of different coding resources, and the ability to build a project from scratch within the course of just over a day and a half. However, other skills are less obvious: we also learned about the possible long-term impacts of COVID-19 through our project considerations, how to find relevant answers to problems we face, and various mathematical concepts from our illustrations of the connections between our droplets for our project.
 
-```
-$ git clone https://github.com/MLH/mlh-hackathon-flask-starter.git
-$ cd mlh-hackathon-flask-starter
-```
-
-**Step 2. Create a Virtual Environment and install Dependencies.**
-
-Create a new Virtual Environment for the project and activate it. If you don't have the `virtualenv` command yet, you can find installation [instructions here](https://virtualenv.readthedocs.io/en/latest/). Learn more about [Virtual Environments](http://flask.pocoo.org/docs/1.0/installation/#virtual-environments).
-
-```
-$ virtualenv venv
-$ source venv/bin/activate
-```
-
-Next, we need to install the project dependencies, which are listed in `requirements.txt`.
-
-```
-(venv) $ pip install -r requirements.txt
-```
-
-**Step 3: Create an app on GitHub**
-
-Head over to [GitHub OAuth apps](https://github.com/settings/developers) and create a new OAuth app. Name it what you like but you'll need to specify a callback URL, which should be something like:
-
-```
-http://localhost:5000/auth/callback/github
-```
-
-The default port for Flask apps is `5000`, but you may need to update this if your setup uses a different port or if you're hosting your app somewhere besides your local machine.
-
-**Step 4: Setup your database**
-
-You need to be able to connect to a database either on your own computer (locally) or through a hosted database. You can [install Postgres locally](http://www.postgresqltutorial.com/install-postgresql/) and [connect to it](http://www.postgresqltutorial.com/connect-to-postgresql-database/) to provide the database for your app.
-
-You will need to know the connection URL for your application which we will call `DATABASE_URL` in your environment variables. Here is an example:
-
-```
-postgresql://localhost:5432/mlh-hackathon-starter-flask
-```
-
-**Step 5: Update environment variables and run the Server.**
-
-Create a new file named `.env` by duplicating `.env.example`. Update the new file with the GitHub credentials. It should look similar to this:
-
-```
-# .env file
-DATABASE_URL="[INSERT_DATABASE_URL]"
-GITHUB_CLIENT_ID="[INSERT_CLIENT_ID]"
-GITHUB_CLIENT_SECRET="[INSERT_CLIENT_SECRET]"
-```
-
-You replace the GitHub credentials here and update the database URL. Learn more about the required [Environment Variables here](https://github.com/MLH/mlh-hackathon-flask-starter/blob/master/docs/USER_GUIDE.md#environment-variables).
-
-Now we're ready to start our server which is as simple as:
-
-```
-(venv) $ flask run
-```
-
-Open http://localhost:5000 to view it in your browser.
-
-The app will automatically reload if you make changes to the code.
-You will see the build errors and warnings in the console.
-
-# What's Included?
-
-- [Flask](http://flask.pocoo.org/) - A microframework for Python web applications
-- [Flask Blueprints](http://flask.pocoo.org/docs/1.0/blueprints/) - A Flask extension for making modular applications
-- [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.3/) - A Flask extension that adds ORM support for your data models.
-- [Werkzeug](http://werkzeug.pocoo.org/) - A Flask framework that implements WSGI for handling requests.
-- [Bootstrap 4](https://getbootstrap.com/) - An open source design system for HTML, CSS, and JS.
-- [Jinja2](http://jinja.pocoo.org/docs/2.10/) - A templating language for Python, used by Flask.
-
-# Code of Conduct
-
-We enforce a Code of Conduct for all maintainers and contributors of this Guide. Read more in [CONDUCT.md](https://github.com/MLH/mlh-hackathon-flask-starter/blob/master/docs/CONDUCT.md).
-
-# License
-
-The Hackathon Starter Kit is open source software [licensed as MIT](https://github.com/MLH/mlh-hackathon-flask-starter/blob/master/LICENSE.md).
+## What's next for Sea of Knowledge
+If we make plans to expand Sea of Knowledge, our first step would probably be to set up a server to protect our information. We could also work on a more complex interface and additional functionality to improve the user experience.
