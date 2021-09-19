@@ -33,7 +33,9 @@ def create_app(config_object=settings):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    register_routes(app, mongo.db.sea, mongo.db.connections)
+    # mongo.db.sea_two.drop()
+    # mongo.db.connections_two.drop()
+    register_routes(app, mongo.db.sea_two, mongo.db.connections_two)
     return app
 
 def register_extensions(app):
@@ -90,12 +92,16 @@ def register_routes(app, sea, connections):
         object = sea.find_one({"_id": ObjectId(id)})
         dropstring = object['content']
         example_array = ["string1", "string2", "string3"]
-        connection_cursor = connections.find({"$expr": {"$and": [ {"$eq": ["$o1", ObjectId(id)] }, {"gte": [{"$divide": ["$orderSum", "$denominator"]}, 0.5]}, {"$gt": [{"$divide": ["$relevanceSum", "$denominator"]}, 0.6]} ]}})
+        # {"$divide": ["$orderSum", "$denominator"]}
+        # connection_cursor = connections.aggregate([{"$and": [ {"$eq": ["$o1", ObjectId(id)] }, {"gt": [5, 10]}, {"$gt": [{"$divide": ["$relevanceSum", "$denominator"]}, 70]} ]}])
+        # connection_cursor = connections.find({"$expr": {"gt": [5, 10]}})
+        connection_cursor = connections.find({"o1": ObjectId(id)})
+        filtered_connections = [thing["o2"] for thing in connection_cursor if (thing["orderSum"] > 0.5 * thing["denominator"]) and (thing["relevanceSum"] > 50 * thing["denominator"] )]
         # print(list(connection_cursor))
-        id_array = [thing["o2"] for thing in list(connection_cursor)]
-        string_array = [sea.find_one({"_id": ObjectId(other)}) for other in id_array]
-        print(id_array)
-        print(string_array)
+        # id_array = [thing["o2"] for id in filtered_connections]
+        string_array = [sea.find_one({"_id": ObjectId(other)}) for other in filtered_connections]
+        # print(id_array)
+        # print(string_array)
         return render_template('welcome/dive.html', dropstring=dropstring, related=string_array) 
         # return object['content']
 
@@ -153,7 +159,9 @@ def register_routes(app, sea, connections):
 
     @app.route('/test')
     def test_empty():
-        return {'hello': 'hi'}
+        print(list(sea.find({})))
+        print(list(connections.find({})))
+        return redirect('/')
     
     @app.route('/add_drop')
     def drop_form():
