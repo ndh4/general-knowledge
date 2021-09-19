@@ -85,7 +85,7 @@ def register_routes(app, collection):
         if (collection.count_documents({}) > 0):
             aggregation = collection.aggregate([{ "$sample": { "size": 1 } }])
             for item in list(aggregation):
-              return redirect('/dive/' + str(item['_id']))
+              return redirect('/dive/' + str(item['_id'])) 
         else:
           return redirect('/empty')
 
@@ -93,8 +93,9 @@ def register_routes(app, collection):
     def view_drop(id):
         # print(id)
         object = collection.find_one({"_id": ObjectId(id)})
-        # return render_template('welcome/drop.html') # FIXME: add params
-        return object['content']
+        dropstring = object['content']
+        return render_template('welcome/dive.html', dropstring = dropstring) 
+        # return object['content']
 
     @app.route('/empty')
     def desert():
@@ -169,5 +170,5 @@ def register_routes(app, collection):
         new_drop = {'content': content, 'relations': []}
         result = collection.insert_one(new_drop)
         if (result.acknowledged):
-          return {"id": str(result.inserted_id)}
+          return render_template('welcome/thank_you.html')
         return {"submission unsuccessful": "there was no result"}
