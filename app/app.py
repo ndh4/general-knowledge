@@ -87,10 +87,16 @@ def register_routes(app, sea, connections):
 
     @app.route('/dive/<string:id>')
     def view_drop(id):
-        # print(id)
         object = sea.find_one({"_id": ObjectId(id)})
         dropstring = object['content']
-        return render_template('welcome/dive.html', dropstring = dropstring) 
+        example_array = ["string1", "string2", "string3"]
+        connection_cursor = connections.find({"$expr": {"$and": [ {"$eq": ["$o1", ObjectId(id)] }, {"gte": [{"$divide": ["$orderSum", "$denominator"]}, 0.5]}, {"$gt": [{"$divide": ["$relevanceSum", "$denominator"]}, 0.6]} ]}})
+        # print(list(connection_cursor))
+        id_array = [thing["o2"] for thing in list(connection_cursor)]
+        string_array = [sea.find_one({"_id": ObjectId(other)}) for other in id_array]
+        print(id_array)
+        print(string_array)
+        return render_template('welcome/dive.html', dropstring=dropstring, related=string_array) 
         # return object['content']
 
     @app.route('/empty')
@@ -110,7 +116,7 @@ def register_routes(app, sea, connections):
         if (sea.count_documents({}) == 1):
             return redirect('/half_empty')
         # 2 or more elements
-        aggregation = sea.aggregate([{ "$sample": { "size": 2 }}, {"$project": {"relations": 0}} ])
+        aggregation = sea.aggregate([{ "$sample": { "size": 2 }}])
         if (not aggregation):
             return redirect('/empty')
         ag_as_list = list(aggregation)
@@ -156,7 +162,7 @@ def register_routes(app, sea, connections):
     @app.route('/add_drop', methods=['POST'])
     def add_drop():
         content = request.form['text']
-        new_drop = {'content': content, 'relations': []}
+        new_drop = {'content': content}
         result = sea.insert_one(new_drop)
         if (result.acknowledged):
           return render_template('welcome/thank_you.html')

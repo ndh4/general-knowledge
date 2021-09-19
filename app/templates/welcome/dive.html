@@ -29,7 +29,7 @@
     
   <div>
     <header>
-      <h2 class="h2 mb-0">See the Sea</h2>
+      <h2 class="h2 mb-0">Your current horizon</h2>
     </header>
     
     <main>
@@ -37,13 +37,13 @@
     </main>
 
     <dpool>
-      <h4>this is a not quite long testing string. This is a second sentence. </h4>
-      <h4>this is a not quite long testing string. This is a second sentence. </h4>
-      <h4>this is a not quite long testing string. This is a second sentence. </h4>
-      <h4>this is a not quite long testing string. This is a second sentence. </h4>
-      <h4>this is a not quite long testing string. This is a second sentence. </h4>
-      <h4>this is a not quite long testing string. This is a second sentence. </h4>
+      {% for related_drop in related %}
+      <a class="btn btn-secondary btn-lg mb-3" href="{{'/dive/' ~ related_drop['_id']}}"}>{{related_drop['content']}}</a><br>
+      {% endfor %}
     </dpool>
+    <a class="btn btn-primary mt-2" href= "/dive">
+      I'm getting seasick, take me to a different spot
+    </a>
 
   </div>
 </div>
