@@ -29,15 +29,11 @@ def create_app(config_object=settings):
 
     app.config['MONGO_URI'] = "mongodb+srv://"+str(user)+":"+str(pwd)+"@cluster0.seola.mongodb.net/"+str(dbname)+"?retryWrites=true&w=majority"
     mongo = PyMongo(app)
-    
-    client = MongoClient(app.config['MONGO_URI'])
-    db = client['knowledge_sea']
-    collection = db['sea']
 
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    register_routes(app, mongo.db.sea)
+    register_routes(app, mongo.db.sea, mongo.db.connections)
     return app
 
 def register_extensions(app):
@@ -71,7 +67,7 @@ def register_errorhandlers(app):
 
     return None
 
-def register_routes(app, collection):
+def register_routes(app, sea, connections):
     @app.route('/')
     def index():
         return render_template('welcome/index.html')
@@ -82,8 +78,8 @@ def register_routes(app, collection):
 
     @app.route('/dive')
     def begin_dive():
-        if (collection.count_documents({}) > 0):
-            aggregation = collection.aggregate([{ "$sample": { "size": 1 } }])
+        if (sea.count_documents({}) > 0):
+            aggregation = sea.aggregate([{ "$sample": { "size": 1 } }])
             for item in list(aggregation):
               return redirect('/dive/' + str(item['_id'])) 
         else:
@@ -92,7 +88,7 @@ def register_routes(app, collection):
     @app.route('/dive/<string:id>')
     def view_drop(id):
         # print(id)
-        object = collection.find_one({"_id": ObjectId(id)})
+        object = sea.find_one({"_id": ObjectId(id)})
         dropstring = object['content']
         return render_template('welcome/dive.html', dropstring = dropstring) 
         # return object['content']
@@ -109,12 +105,12 @@ def register_routes(app, collection):
     def stream():
         # drop1 = random.choice(["Brush your teeth", "Look both ways", "Read books"])
         # drop2 = random.choice(["Read Jane Eyre", "Live a healthy lifestyle"])
-        if (collection.count_documents({}) == 0):
+        if (sea.count_documents({}) == 0):
             return redirect('/empty')
-        if (collection.count_documents({}) == 1):
+        if (sea.count_documents({}) == 1):
             return redirect('/half_empty')
         # 2 or more elements
-        aggregation = collection.aggregate([{ "$sample": { "size": 2 }}, {"$project": {"relations": 0}} ])
+        aggregation = sea.aggregate([{ "$sample": { "size": 2 }}, {"$project": {"relations": 0}} ])
         if (not aggregation):
             return redirect('/empty')
         ag_as_list = list(aggregation)
@@ -126,32 +122,25 @@ def register_routes(app, collection):
 
     @app.route('/swish', methods=['POST'])
     def swish_swish():
-        number = request.form['number']
+        relevance = int(request.form['number'])
+        print(relevance)
         should_switch = request.form['shouldSwitch']
+        order = 1
+        if (should_switch):
+          order = 0
         drop1id = request.form['drop1id']
         print(drop1id)
         drop2id = request.form['drop2id']
         print(drop2id)
-        drop1 = collection.find_one({ "_id": ObjectId(drop1id) })
-        drop2 = collection.find_one({ "_id": ObjectId(drop2id) })
-
-        # if (drop1 and drop2):
-        #     if (drop2 in drop1['relations']):
-        #         pass # FIXME
-        #     else:
-        #         collection.update({ "_id": drop1})
-
-
-        #     if (drop1 in drop2['relations']):
-
-        #     else:
-        # else:
-        return "An error occured. Invalid pair of id's: " + drop1id + " and " + drop2id
-
-        return "none"
+        result1 = connections.update({"o1": ObjectId(drop1id), "o2": ObjectId(drop2id)}, {"$inc": {"denominator": 1, "relevanceSum": relevance, "orderSum": order}}, upsert=True)
+        result2 = connections.update({"o1": ObjectId(drop2id), "o2": ObjectId(drop1id)}, {"$inc": {"denominator": 1, "relevanceSum": relevance, "orderSum": 1 - order}}, upsert=True)
+        
+        print(result1)
+        print(result2)
+        return redirect('/swish')
 
         # new_drop = {'content': content, 'relations': []}
-        # result = collection.insert_one(new_drop)
+        # result = sea.insert_one(new_drop)
         # if (result.acknowledged):
         #   return {"id": str(result.inserted_id)}
         # return {"submission unsuccessful": "there was no result"}
@@ -168,7 +157,7 @@ def register_routes(app, collection):
     def add_drop():
         content = request.form['text']
         new_drop = {'content': content, 'relations': []}
-        result = collection.insert_one(new_drop)
+        result = sea.insert_one(new_drop)
         if (result.acknowledged):
           return render_template('welcome/thank_you.html')
         return {"submission unsuccessful": "there was no result"}
