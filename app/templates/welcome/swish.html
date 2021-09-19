@@ -1,18 +1,29 @@
 {% extends "layouts/layout.html" %}
 
 {% block header %}
+<style>
+  p.big {
+    line-height: 1.8;
+  }
+  </style>
+
 <div class="bg-gray-light border-bottom border-gray-light">
   <div class="container text-center py-5 mb-4">
-    <div class="mt-3 mb-4">
-      <h1 class="h1 mb-0">How related are these two droplets?</h1>
-      <h1 class="h1 mb-0">{{drop1}}</h1>
-      <h1 class="h1 mb-0">{{drop2}}</h1>
+    <div class="mt-3 mb-4", class="big">
+      <h1 class="h1 mb-0", class="big">How related are these two droplets?</h1>
+      <br> 
+      <h2 class="h2 mb-0", style="color:blue;", class="big"><i>  {{drop1}}   |   {{drop2}}  </i></h2>
+      <h2 class="h4 mb-0", style="color:black;"> </h2>
       <form method="POST">
+        <br> 
         <h3 class="h4 text-gray font-weight-light">Enter a number from 0 to 100 that describes the relevance between these two droplets. 0 is no connection, 100 is extremely high connection.</h3>
+        <br> 
         <input name="number" required type="number" max="100" min="0">
+        <br> 
+        <br> 
         <h3 class="h4 text-gray font-weight-light">Should the order of these two elements be switched?</h3>
         <input type="radio" id="yes" name="shouldSwitch" value="yes" required>
-        <label for="yes">Yes</label>
+        <label for="yes">Yes </label>
         <input type="radio" id="no" name="shouldSwitch" value="no" required>
         <label for="no">No</label><br>
         <input type="submit">
