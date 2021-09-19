@@ -8,10 +8,13 @@
       <h1 class="h1 mb-0">{{drop1}}</h1>
       <h1 class="h1 mb-0">{{drop2}}</h1>
       <form method="POST">
-        <h3 class="h4 text-gray font-weight-light">Enter a number from 0 to 100. 0 is no connection, 100 is extremely high connection.</h3>
+        <h3 class="h4 text-gray font-weight-light">Enter a number from 0 to 100 that describes the relevance between these two droplets. 0 is no connection, 100 is extremely high connection.</h3>
         <input name="number" required type="number" max="100" min="0">
         <h3 class="h4 text-gray font-weight-light">Should the order of these two elements be switched?</h3>
-        <input name="shouldSwitch" type="checkbox">
+        <input type="radio" id="yes" name="shouldSwitch" value="yes" required>
+        <label for="yes">Yes</label>
+        <input type="radio" id="no" name="shouldSwitch" value="no" required>
+        <label for="no">No</label><br>
         <input type="submit">
       </form>
     </div>
