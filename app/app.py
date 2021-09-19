@@ -81,7 +81,7 @@ def register_routes(app, sea, connections):
         if (sea.count_documents({}) > 0):
             aggregation = sea.aggregate([{ "$sample": { "size": 1 } }])
             for item in list(aggregation):
-              return redirect('/dive/' + str(item['_id']))
+              return redirect('/dive/' + str(item['_id'])) 
         else:
           return redirect('/empty')
 
@@ -89,8 +89,9 @@ def register_routes(app, sea, connections):
     def view_drop(id):
         # print(id)
         object = sea.find_one({"_id": ObjectId(id)})
-        # return render_template('welcome/drop.html') # FIXME: add params
-        return object['content']
+        dropstring = object['content']
+        return render_template('welcome/dive.html', dropstring = dropstring) 
+        # return object['content']
 
     @app.route('/empty')
     def desert():
@@ -158,5 +159,5 @@ def register_routes(app, sea, connections):
         new_drop = {'content': content, 'relations': []}
         result = sea.insert_one(new_drop)
         if (result.acknowledged):
-          return {"id": str(result.inserted_id)}
+          return render_template('welcome/thank_you.html')
         return {"submission unsuccessful": "there was no result"}

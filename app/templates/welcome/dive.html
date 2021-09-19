@@ -1,25 +1,53 @@
 {% extends "layouts/layout.html" %}
 
 {% block header %}
-<div class="bg-gray-light border-bottom border-gray-light">
-  <div class="container text-center py-5 mb-4">
-    <div class="mt-3 mb-4">
-      <h1 class="h1 mb-0">See the Sea</h1>
-    </div>
+<div class="bg-gray-light border-gray-light">
+  <style>
+    main {
+      float: left;
+      width: 40%;
+      height: 300px; 
+      background: rgb(200, 231, 229);
+      padding: 50px;
+    }
+
+    header {
+      background-color: rgba(245, 245, 245, 0.979);
+      padding: 30px;
+      text-align: center;
+      font-size: 35px;
+    }
+
+    dpool {
+      float: right;
+      width: 60%;
+      height: 300px; 
+      /* background: rgb(55, 107, 185); */
+      padding: 20px;
+    }
+    </style>
+    
+  <div>
+    <header>
+      <h2 class="h2 mb-0">See the Sea</h2>
+    </header>
+    
+    <main>
+      <h1>{{dropstring}}</h1>
+    </main>
+
+    <dpool>
+      <h4>this is a not quite long testing string. This is a second sentence. </h4>
+      <h4>this is a not quite long testing string. This is a second sentence. </h4>
+      <h4>this is a not quite long testing string. This is a second sentence. </h4>
+      <h4>this is a not quite long testing string. This is a second sentence. </h4>
+      <h4>this is a not quite long testing string. This is a second sentence. </h4>
+      <h4>this is a not quite long testing string. This is a second sentence. </h4>
+    </dpool>
+
   </div>
 </div>
 
-<div id =  "droplet >
-  <h1> This is a droplet etc etc </h1>
-</div>
-<div id =  "main" >
-  <h6 class="w3-hover-black">some other stuff</h6>
-  <h6 class="w3-hover-black">some other stuff</h6>
-  <h6 class="w3-hover-black">some other stuff</h6>
-  <h6 class="w3-hover-black">some other stuff</h6>
-  <h6 class="w3-hover-black">some other stuff</h6>
-  <h6 class="w3-hover-black"> some other stuff</h6>
-</div>
 {% endblock %}
 
   
