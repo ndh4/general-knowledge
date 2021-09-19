@@ -8,13 +8,16 @@
       <h1 class="h1 mb-0">{{drop1}}</h1>
       <h1 class="h1 mb-0">{{drop2}}</h1>
       <form method="POST">
-        <h3 class="h4 text-gray font-weight-light">Enter a number from 1 to 100. 1 is no connection, 100 is extremely high connection.</h3>
-        <input name="number">
+        <h3 class="h4 text-gray font-weight-light">Enter a number from 0 to 100. 0 is no connection, 100 is extremely high connection.</h3>
+        <input name="number" required type="number" max="100" min="0">
         <h3 class="h4 text-gray font-weight-light">Should the order of these two elements be switched?</h3>
-        <input name="shouldSwitch">
+        <input name="shouldSwitch" type="checkbox">
         <input type="submit">
       </form>
     </div>
+    <a class="btn btn-primary mt-2" href= "/swish">
+      I don't understand one or both of these, give me a new pair
+    </a>
   </div>
 </div>
 {% endblock %}

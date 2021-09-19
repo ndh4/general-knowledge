@@ -1,4 +1,5 @@
 import os
+import random
 
 from flask import Flask, render_template, request, redirect
 from flask_pymongo.wrappers import MongoClient
@@ -101,7 +102,9 @@ def register_routes(app, collection):
 
     @app.route('/swish')
     def stream():
-        return render_template('welcome/swish.html', drop1="hello", drop2="world")
+        drop1 = random.choice(["Brush your teeth", "Look both ways", "Read books"])
+        drop2 = random.choice(["Read Jane Eyre", "Live a healthy lifestyle"])
+        return render_template('welcome/swish.html', drop1=drop1, drop2=drop2)
 
     @app.route('/test')
     def test_empty():
