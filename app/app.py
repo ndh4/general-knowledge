@@ -100,11 +100,60 @@ def register_routes(app, collection):
     def desert():
         return render_template('welcome/empty.html')
 
+    @app.route('/half_empty')
+    def glass_half():
+        return render_template('welcome/half_empty.html')
+
     @app.route('/swish')
     def stream():
-        drop1 = random.choice(["Brush your teeth", "Look both ways", "Read books"])
-        drop2 = random.choice(["Read Jane Eyre", "Live a healthy lifestyle"])
+        # drop1 = random.choice(["Brush your teeth", "Look both ways", "Read books"])
+        # drop2 = random.choice(["Read Jane Eyre", "Live a healthy lifestyle"])
+        if (collection.count_documents({}) == 0):
+            return redirect('/empty')
+        if (collection.count_documents({}) == 1):
+            return redirect('/half_empty')
+        # 2 or more elements
+        aggregation = collection.aggregate([{ "$sample": { "size": 2 }}, {"$project": {"relations": 0}} ])
+        if (not aggregation):
+            return redirect('/empty')
+        ag_as_list = list(aggregation)
+        print("hello")
+        print(ag_as_list)
+        drop1 = ag_as_list[0]
+        drop2 = ag_as_list[1]
         return render_template('welcome/swish.html', drop1=drop1, drop2=drop2)
+
+    @app.route('/swish', methods=['POST'])
+    def swish_swish():
+        number = request.form['number']
+        should_switch = request.form['shouldSwitch']
+        drop1id = request.form['drop1id']
+        print(drop1id)
+        drop2id = request.form['drop2id']
+        print(drop2id)
+        drop1 = collection.find_one({ "_id": ObjectId(drop1id) })
+        drop2 = collection.find_one({ "_id": ObjectId(drop2id) })
+
+        # if (drop1 and drop2):
+        #     if (drop2 in drop1['relations']):
+        #         pass # FIXME
+        #     else:
+        #         collection.update({ "_id": drop1})
+
+
+        #     if (drop1 in drop2['relations']):
+
+        #     else:
+        # else:
+        return "An error occured. Invalid pair of id's: " + drop1id + " and " + drop2id
+
+        return "none"
+
+        # new_drop = {'content': content, 'relations': []}
+        # result = collection.insert_one(new_drop)
+        # if (result.acknowledged):
+        #   return {"id": str(result.inserted_id)}
+        # return {"submission unsuccessful": "there was no result"}
 
     @app.route('/test')
     def test_empty():

@@ -36,8 +36,8 @@ td {
         
       <table style="width:100%">
         <tr style="text-align: middle; background-color: white; width:70%;">
-          <th><h3 class="h2 mb-0", style="color:rgb(54, 72, 179);", class="big">{{drop1}}</h3></th>
-          <th><h3 class="h2 mb-0", style="color:rgb(54, 72, 179);", class="big">{{drop2}}</h3></th>
+          <th><h3 class="h2 mb-0", style="color:rgb(54, 72, 179);", class="big">{{drop1["content"]}}</h3></th>
+          <th><h3 class="h2 mb-0", style="color:rgb(54, 72, 179);", class="big">{{drop2["content"]}}</h3></th>
         </tr>
       </table>
       <!-- <h2 class="h2 mb-0", style="color:blue;", class="big"><i>  {{drop1}}   |   {{drop2}}  </i></h2> -->
@@ -53,6 +53,8 @@ td {
         <label for="yes">Yes</label>
         <input type="radio" id="no" name="shouldSwitch" value="no" required>
         <label for="no">No</label><br>
+        <input type="hidden" name="drop1id" value={{ drop1["_id"] }}>
+        <input type="hidden" name="drop2id" value={{ drop2["_id"] }}>
         <input type="submit">
       </form>
     </div>
