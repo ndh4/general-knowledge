@@ -11,9 +11,36 @@
   <div class="container text-center py-5 mb-4">
     <div class="mt-3 mb-4", class="big">
       <h1 class="h1 mb-0", class="big">How related are these two droplets?</h1>
-      <br> 
-      <h2 class="h2 mb-0", style="color:blue;", class="big"><i>  {{drop1}}   |   {{drop2}}  </i></h2>
-      <h2 class="h4 mb-0", style="color:black;"> </h2>
+      <br>
+      <style>
+         table {
+          border-collapse: separate;
+          border-spacing: 100px 0;
+          padding: 15px;
+          table-layout: fixed;
+          width: 200px;
+        }
+          th, td {
+          border: 1.7px solid black;
+          border-collapse: separate;
+          border-spacing: 130px 0;
+          padding: 15px;
+          table-layout: fixed;
+          width: 200px;
+        }
+
+td {
+  padding: 10px 0;
+}
+      </style>
+        
+      <table style="width:100%">
+        <tr style="text-align: middle; background-color: white; width:70%;">
+          <th><h3 class="h2 mb-0", style="color:rgb(54, 72, 179);", class="big">{{drop1}}</h3></th>
+          <th><h3 class="h2 mb-0", style="color:rgb(54, 72, 179);", class="big">{{drop2}}</h3></th>
+        </tr>
+      </table>
+      <!-- <h2 class="h2 mb-0", style="color:blue;", class="big"><i>  {{drop1}}   |   {{drop2}}  </i></h2> -->
       <form method="POST">
         <br> 
         <h3 class="h4 text-gray font-weight-light">Enter a number from 0 to 100 that describes the relevance between these two droplets. 0 is no connection, 100 is extremely high connection.</h3>
@@ -23,7 +50,7 @@
         <br> 
         <h3 class="h4 text-gray font-weight-light">Should the order of these two elements be switched?</h3>
         <input type="radio" id="yes" name="shouldSwitch" value="yes" required>
-        <label for="yes">Yes </label>
+        <label for="yes">Yes</label>
         <input type="radio" id="no" name="shouldSwitch" value="no" required>
         <label for="no">No</label><br>
         <input type="submit">
