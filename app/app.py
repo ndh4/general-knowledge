@@ -99,9 +99,9 @@ def register_routes(app, collection):
     def desert():
         return render_template('welcome/empty.html')
 
-    @app.route('/stream')
+    @app.route('/swish')
     def stream():
-        return render_template('welcome/stream.html')
+        return render_template('welcome/swish.html', drop1="hello", drop2="world")
 
     @app.route('/test')
     def test_empty():
